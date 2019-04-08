@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+is_mysql_ready() {
+  local service_name="$1"
+  local mysql_ready=false
+  while test "$mysql_ready" != "true"
+  do
+    logs="$(docker-compose -p alba logs "$service_name")";
+    echo $logs | grep -q "MySQL init process done. Ready for start up." && mysql_ready=true || sleep 1;
+    printf '.';
+  done
+  echo " $service_name ready."
+}
+
+is_mysql_ready 'mysql'
